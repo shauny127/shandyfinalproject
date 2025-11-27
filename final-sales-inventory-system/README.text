@@ -1,0 +1,76 @@
+INVENTORY MANAGEMENT SYSTEM SETUP GUIDE
+
+1. DATABASE SETUP:
+   - Create PostgreSQL database: inventory_system
+   - Run the SQL commands to create tables (see SQL below)
+
+2. CONFIGURATION:
+   - Update database credentials in config/database.php
+   - Change PostgreSQL username/password as needed
+
+3. ACCESS THE SYSTEM:
+   - Start XAMPP (Apache)
+   - Start PostgreSQL service
+   - Open: http://localhost/inventory-system/inventory.html
+
+4. SQL TABLES:
+   Run these in pgAdmin:
+
+   CREATE TABLE categories (
+       category_id VARCHAR(50) PRIMARY KEY,
+       category_name VARCHAR(100) NOT NULL,
+       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
+
+   CREATE TABLE suppliers (
+       supplier_id VARCHAR(50) PRIMARY KEY,
+       supplier_name VARCHAR(100) NOT NULL,
+       supplier_contact VARCHAR(100),
+       supplier_email VARCHAR(100),
+       supplier_phone VARCHAR(20),
+       supplier_address TEXT,
+       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
+
+   CREATE TABLE products (
+       product_id VARCHAR(50) PRIMARY KEY,
+       product_name VARCHAR(100) NOT NULL,
+       product_description TEXT,
+       category_id VARCHAR(50) REFERENCES categories(category_id),
+       unit_price DECIMAL(10,2) NOT NULL,
+       quantity_in_stock INTEGER NOT NULL,
+       reorder_level INTEGER NOT NULL,
+       supplier_id VARCHAR(50) REFERENCES suppliers(supplier_id),
+       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
+
+   CREATE TABLE customers (
+       customer_id VARCHAR(50) PRIMARY KEY,
+       customer_name VARCHAR(100) NOT NULL,
+       customer_email VARCHAR(100),
+       customer_phone VARCHAR(20),
+       customer_address TEXT,
+       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
+
+   CREATE TABLE employees (
+       employee_id VARCHAR(50) PRIMARY KEY,
+       employee_name VARCHAR(100) NOT NULL,
+       employee_position VARCHAR(100),
+       employee_email VARCHAR(100),
+       employee_phone VARCHAR(20),
+       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
+
+   CREATE TABLE sales (
+       sale_id VARCHAR(50) PRIMARY KEY,
+       sale_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+       sale_product_id VARCHAR(50) REFERENCES products(product_id),
+       sale_quantity INTEGER NOT NULL,
+       sale_unit_price DECIMAL(10,2) NOT NULL,
+       sale_total_amount DECIMAL(10,2) NOT NULL,
+       sale_customer_id VARCHAR(50) REFERENCES customers(customer_id),
+       sale_employee_id VARCHAR(50) REFERENCES employees(employee_id),
+       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
